@@ -93,7 +93,6 @@
 
 //         let _result_data = result_v_events(data);
 
-use core::panic;
 
 //         // get latest 1 Json data as struct ChangedEvent
 //         let recent_events = get_latest_json_lines(JSON_PATH, 1_usize);
@@ -108,10 +107,13 @@ use core::panic;
 //         }
 //     }
 // //}
+
 use ilhook::{HookError, x86::{CallbackOption, HookFlags, HookPoint, HookType, Hooker, Registers}};
+use core::panic;
+use std::path::Path;
+use pelite::{FileMap, Result};
 use pelite::pe64::{Pe, PeFile};
 use pelite::resources::FindError;
-
 
 // ilhook
 unsafe extern "cdecl" fn on_check_sn(reg:*mut Registers, _:usize){
@@ -120,7 +122,7 @@ unsafe extern "cdecl" fn on_check_sn(reg:*mut Registers, _:usize){
 }
 
 // pelite
-fn get_data<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
+fn get_bytes_data<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
     const DATA_PATH: &'static str= "";
 
 	// Access the resources
@@ -152,6 +154,8 @@ fn main(){
         0, 
         HookFlags::empty());
     
+    //check_serial_number();
+    
     unsafe{
         let result_hook= hooker.hook();
         let mut hook_point= match result_hook {
@@ -162,22 +166,30 @@ fn main(){
                 panic!("failed hook");
             }
         }
-
         
-        if  {
+        // @TODO when japanese show up in game, try to capture a dll file
+        // Crate pedum
+        
+        // @TODO extract Japanese -> pelite(IDK its working?)
+        let pe_file;
+        let bytes_data= match get_bytes_data(pe_file){
+            Ok(_bytes) =>{
+                return _bytes;
+            },
+            Err(e) => { 
+                panic!("failed to get bytes data"); 
+            },
+            _ => {}
+        };
+
+        // @TODO translatie
+
+        // when thread will move or targeted process will quite
+        if  { 
             HookPoint::unhook(running_hook); 
         }
     };
 
-    //check_serial_number();
-   
-    // when japanese show up in game, try to capture a dll file
-    // Crate pedump 
-
-    // extract Japanese -> pelite
-     
-    // translate
-    
     // Options
     // 1. hotkey is "s"
 }
