@@ -1,5 +1,6 @@
 mod translation;
 mod string_from_bytes;
+mod struct_string;
 
 use ilhook::{HookError, x86::{CallbackOption, HookFlags, HookPoint, HookType, Hooker, Registers}};
 use core::panic;
