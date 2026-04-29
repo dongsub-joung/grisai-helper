@@ -106,11 +106,34 @@
         }
     }
 //}
-fn auto_skipping(){ // pressing cnt key and hold
-    // if press "s" key exit 
-}
-fn main(){
+use ilhook::x86::{Hooker, HookType, Registers, CallbackOption, HookFlags};
 
+unsafe extern "cdecl" fn on_check_sn(reg:*mut Registers, _:usize){
+    println!("machine_hash: {}, sn_hash: {}", (*reg).ebx, (*reg).eax);
+    (*reg).eax = (*reg).ebx; //we modify the sn_hash!
+}
+
+fn main(){
+    // pid
+
+    // searching memory location
+    
+    // hooking -> ihook & custom
+    let hooker= Hooker::new(0x40107F, HookType::JmpBack(on_check_sn), 
+        CallbackOption::None, 
+        0, 
+        HookFlags::empty());
+    //hooker.hook().unwrap(); //commented as hooking is not supported in doc tests
+    check_serial_number();
+    
+    // extract Japanese -> pelite
+    
+    // translate
+    
     // Options
     // 1. hotkey is "s"
+}
+
+fn auto_skipping(){ // pressing cnt key and hold
+    // if press "s" key exit 
 }
