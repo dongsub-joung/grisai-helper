@@ -110,8 +110,7 @@
 
 use ilhook::{HookError, x86::{CallbackOption, HookFlags, HookPoint, HookType, Hooker, Registers}};
 use core::panic;
-use std::path::Path;
-use pelite::{FileMap, Result};
+use pelite::{Result};
 use pelite::pe64::{Pe, PeFile};
 use pelite::resources::FindError;
 
@@ -122,6 +121,7 @@ unsafe extern "cdecl" fn on_check_sn(reg:*mut Registers, _:usize){
 }
 
 // pelite
+// @TODO Fix Geeric type problem
 fn get_bytes_data<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
     const DATA_PATH: &'static str= "";
 
@@ -132,11 +132,17 @@ fn get_bytes_data<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
     // if match name = grisaia (Japanese) -> keep going, No -> _ 
 
 	// Find the desired resource by its path
-	let data = resources.find_data(DATA_PATH)?;
+	let data = match resources.find_data(DATA_PATH){
+        Ok(_data_entry) => {
+            _data_entry
+        },
+        Err(e) => {
+            panic!("failed to find data");
+        }
+    };
 	
     let manifest = data.bytes()?;
 
-    
     // need to get other data
     // pelite::resources -> pub fn new(section: &'a [u8], dir: &'a IMAGE_DATA_DIRECTORY) -> Resources<'a>
 
@@ -148,7 +154,7 @@ fn main(){
 
     // hooking -> ihook & custom
     let hooker= Hooker::new(
-        0x40107F, 
+        0x40107F,  // from CPP
         HookType::JmpBack(on_check_sn), 
         CallbackOption::None, //impl !Sync for CallbackOption 
         0, 
@@ -165,7 +171,7 @@ fn main(){
             Err(e) =>{
                 panic!("failed hook");
             }
-        }
+        };
         
         // @TODO when japanese show up in game, try to capture a dll file
         // Crate pedum
@@ -185,9 +191,9 @@ fn main(){
         // @TODO translatie
 
         // when thread will move or targeted process will quite
-        if  { 
-            HookPoint::unhook(running_hook); 
-        }
+        // if  { 
+        //     HookPoint::unhook(running_hook); 
+        // }
     };
 
     // Options
