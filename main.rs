@@ -1,4 +1,42 @@
-//fn main() {
+use std::{env, path::Path};
+use chrono::Local;
+use rev_lines::RevLines;
+use std::fs::{self, File};
+use std::io::{self, BufReader};
+use serde::{Deserialize, Serialize};
+use nix::sys::signal::{Signal, kill};
+
+#[derive(Serialize, Deserialize, Debug)]
+struct ChangedEvent {
+    checksum: String,
+    detailed_operation: String,
+    file: String,
+    file_size: usize,
+    fpid: usize,
+    hostname: String,
+    id: String,
+    labels: [String; 2],
+    node: String,
+    operation: String,
+    system: String,
+    timestamp: String,
+    version: String,
+    
+    #[serde(flatten), derive(serde::Serialize), derive(serde::Deserialize)]
+    extra_fields: Map<String, String>
+}
+
+const JSON_PATH: &'static str = "/var/lib/fim/events.json";
+
+// for fn print_all_data
+fn print_json_data_pretty(event: &ChangedEvent) {
+    match serde_json::to_string_pretty(event) {
+        Ok(json_str) => println!("{:#?}", json_str),
+        Err(e) => eprintln!("Failed to serialize for printing: {}", e),
+    }
+}
+
+fn main() {
     let result_v_events = |data: String| -> Result<ChangedEvent, serde_json::Error> {
         let v_events: ChangedEvent= serde_json::from_str(&data)?;
 
@@ -88,7 +126,7 @@
     }
 
     // init
-    fn noting(){
+    loop {
         let data: String = fs::read_to_string(JSON_PATH).expect("failed to find path");
 
         let _result_data = result_v_events(data);
@@ -105,12 +143,16 @@
             fim_process_sleep_for_backup();
         }
     }
-//}
-fn auto_skipping(){ // pressing cnt key and hold
-    // if press "s" key exit 
 }
-fn main(){
 
-    // Options
-    // 1. hotkey is "s"
+// Options
+fn print_all_data(result_data: &Result<ChangedEvent, serde_json::Error>) {
+    match result_data {
+        Ok(event) => {
+            print_json_data_pretty(event);
+        }
+        Err(e) => {
+            panic!("<{e}> failed parsing log data");
+        }
+    }
 }
