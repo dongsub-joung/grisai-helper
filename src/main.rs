@@ -109,10 +109,36 @@ use core::panic;
 //     }
 // //}
 use ilhook::{HookError, x86::{CallbackOption, HookFlags, HookPoint, HookType, Hooker, Registers}};
+use pelite::pe64::{Pe, PeFile};
+use pelite::resources::FindError;
 
+
+// ilhook
 unsafe extern "cdecl" fn on_check_sn(reg:*mut Registers, _:usize){
     println!("machine_hash: {}, sn_hash: {}", (*reg).ebx, (*reg).eax);
     (*reg).eax = (*reg).ebx; //we modify the sn_hash!
+}
+
+// pelite
+fn get_data<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
+    const DATA_PATH: &'static str= "";
+
+	// Access the resources
+	let resources = file.resources()?;
+    
+    // get enum Name from Resources 
+    // if match name = grisaia (Japanese) -> keep going, No -> _ 
+
+	// Find the desired resource by its path
+	let data = resources.find_data(DATA_PATH)?;
+	
+    let manifest = data.bytes()?;
+
+    
+    // need to get other data
+    // pelite::resources -> pub fn new(section: &'a [u8], dir: &'a IMAGE_DATA_DIRECTORY) -> Resources<'a>
+
+	Ok(manifest)
 }
 
 fn main(){
@@ -138,7 +164,6 @@ fn main(){
         }
 
         
-        // @TODO
         if  {
             HookPoint::unhook(running_hook); 
         }
@@ -150,7 +175,7 @@ fn main(){
     // Crate pedump 
 
     // extract Japanese -> pelite
-    
+     
     // translate
     
     // Options
