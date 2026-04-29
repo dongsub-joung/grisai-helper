@@ -114,18 +114,23 @@ unsafe extern "cdecl" fn on_check_sn(reg:*mut Registers, _:usize){
 }
 
 fn main(){
-    // pid
+    // searching memory location -> CPP code
 
-    // searching memory location
-    
     // hooking -> ihook & custom
-    let hooker= Hooker::new(0x40107F, HookType::JmpBack(on_check_sn), 
-        CallbackOption::None, 
+    let hooker= Hooker::new(
+        0x40107F, 
+        HookType::JmpBack(on_check_sn), 
+        CallbackOption::None, //impl !Sync for CallbackOption 
         0, 
         HookFlags::empty());
-    //hooker.hook().unwrap(); //commented as hooking is not supported in doc tests
-    check_serial_number();
     
+    unsafe{hooker.hook().unwrap()};
+
+    //check_serial_number();
+   
+    // when japanese show up in game, try to capture a dll file
+    // Crate pedump 
+
     // extract Japanese -> pelite
     
     // translate
