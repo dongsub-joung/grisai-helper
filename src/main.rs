@@ -93,6 +93,8 @@
 
 //         let _result_data = result_v_events(data);
 
+use core::panic;
+
 //         // get latest 1 Json data as struct ChangedEvent
 //         let recent_events = get_latest_json_lines(JSON_PATH, 1_usize);
         
@@ -106,7 +108,7 @@
 //         }
 //     }
 // //}
-use ilhook::{x86::{HookPoint, CallbackOption, HookFlags, HookType, Hooker, Registers}};
+use ilhook::{HookError, x86::{CallbackOption, HookFlags, HookPoint, HookType, Hooker, Registers}};
 
 unsafe extern "cdecl" fn on_check_sn(reg:*mut Registers, _:usize){
     println!("machine_hash: {}, sn_hash: {}", (*reg).ebx, (*reg).eax);
@@ -125,7 +127,16 @@ fn main(){
         HookFlags::empty());
     
     unsafe{
-        let mut running_hook= hooker.hook().unwrap();
+        let result_hook= hooker.hook();
+        let mut hook_point= match result_hook {
+            Ok(_hook_point) =>{
+                _hook_point
+            },
+            Err(e) =>{
+                panic!("failed hook");
+            }
+        }
+
         
         // @TODO
         if  {
