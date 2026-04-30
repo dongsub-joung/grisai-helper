@@ -4,14 +4,14 @@ enum CONTURIES{
     CHINESE,
 }
 
-struct StringData{
-   string_data: String,
+pub struct StringData{
+   string_data: C_String,
    contury_code: CONTURIES,
    translated_data: String,
 }
 
 impl StringData{
-    pub fn new(string_data: String, contury_code: CONTURIES) -> Self{
+    pub fn new(string_data: [C_String], contury_code: CONTURIES) -> Self{
         Self{ string_data, contury_code, translated_data: String::new() }
     }
 
@@ -19,5 +19,3 @@ impl StringData{
        self.translated_data= translated_data; 
     }
 }
-
-
