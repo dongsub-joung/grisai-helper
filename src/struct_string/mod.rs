@@ -1,3 +1,5 @@
+use crate::string_from_bytes;
+
 enum CONTURIES{
     ENGLISH,
     RUSSIAN,
@@ -5,13 +7,13 @@ enum CONTURIES{
 }
 
 pub struct StringData{
-   string_data: C_String,
+   string_data:  string_from_bytes::CString,
    contury_code: CONTURIES,
-   translated_data: String,
+   translated_data: String, // IDK Vec<CString> (I can converte Vec<String>?)
 }
 
 impl StringData{
-    pub fn new(string_data: [C_String], contury_code: CONTURIES) -> Self{
+    pub fn new(cstring_data: CString, contury_code: CONTURIES) -> Self{
         Self{ string_data, contury_code, translated_data: String::new() }
     }
 
