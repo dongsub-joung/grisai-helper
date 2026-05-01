@@ -34,7 +34,7 @@ impl Translation{
     }
 
     // @TODO tokio
-    async fn commuicate_with_translation_api(&self){ // -> self::struct_string::StringData
+    pub async fn commuicate_with_translation_api(&self){ // -> self::struct_string::StringData
         // make .evn
         const API_KEY: &'static str= "";
         

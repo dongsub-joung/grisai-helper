@@ -1,7 +1,6 @@
 mod translation;
 mod string_from_bytes;
 mod struct_string;
-mod bytes_data;
 
 use ilhook::{HookError, x86::{CallbackOption, HookFlags, HookPoint, HookType, Hooker, Registers}};
 use core::panic;
@@ -20,7 +19,7 @@ struct ConvertingErr;
 
 // pelite
 // @TODO Fix Geeric type problem
-fn get_bytes_data<'a>(file: PeFile<'a>) -> Option<Box<Vec<bytes_data::BytesData>>> {
+fn get_bytes_data<'a>(file: PeFile<'a>) -> Option<Vec<&[u8]>> {
     const DATA_PATH: &'static str= "";
 
 	// Access the resources
@@ -39,15 +38,12 @@ fn get_bytes_data<'a>(file: PeFile<'a>) -> Option<Box<Vec<bytes_data::BytesData>
         }
     };
 	
-    // @TODO add cust Error type
-    let manifest = data.bytes();
-    
-    // @TODO need to get other data
+    let manifest = data.bytes().map_Err(ConvertingErr);
+    // need to get other data
     // pelite::resources -> pub fn new(section: &'a [u8], dir: &'a IMAGE_DATA_DIRECTORY) -> Resources<'a>
 
-    let v_manifests: Box<Vec<bytes_data::BytesData>>= Box::from(Vec::from(manifest));
-	
-    Option::Some(v_manifests)
+    let manifest: Vec<&[u8]>= Vec::from(manifest);
+	Some(manifests)
 }
 
 fn main(){
