@@ -78,6 +78,7 @@ fn main(){
         // Crate pedum
         
         // @TODO extract Japanese -> pelite(IDK its working?)
+        // will have this loop code block
         let pe_file;
         let v_bytes_data= match get_bytes_data(pe_file){
             Some(_bytes) =>{
