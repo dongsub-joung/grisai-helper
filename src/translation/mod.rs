@@ -4,6 +4,26 @@ struct Translation{
     sentence_data: self::struct_string::StringData,
 }
 
+struct TranslatedStrings{
+    log_data: Vec<CString>,
+}
+impl TranslatedStrings{
+    pub fn new() -> Self{ Self {log_data: Vec::from(CString::new())} }
+
+    pub unsafe fn logging_history(&mut self, translated_cstring: Translation) -> &mut Self{
+        match self.log_data.capacity(){
+            0..30 => { 
+                self.log_data.push(translated_cstring.sentence_data);
+            },
+            _ => {
+               // @TODO save sentence_Data on log.txt
+            }
+        }
+
+        self
+    }
+}
+
 
 #[derive(Debug)]
 struct ApiCallErr;
@@ -23,7 +43,9 @@ impl Translation{
         // init api request
         
         // json dezerialization?
-        
+       
+        // convert CString
+
         // save sentence_data
     }
 }
