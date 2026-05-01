@@ -96,9 +96,14 @@ fn main(){
             );
         let cstring_data= string_from_bytes::CString::from_bytes(japanese_data);
         std::thread::spawn({
-            let _ctring_data= cstring_data.clone();
+            let _cstring_data= cstring_data.clone();
             // @TODO convert struct type
 
+            let struct_string= struct_string::StringData::new(
+                _sctring_data,
+                struct_string::StringData::CONTURIES::ENGLISH
+                );
+            translation::Transaltion::new();
             let struct_translated_strings= self::translation::TranslatedStrings::new();
             
             self::translation::TranslatedStrings::logging_history(
