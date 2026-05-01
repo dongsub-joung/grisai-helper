@@ -1,4 +1,5 @@
 pub struct BytesData{
-    pub bytes: Rc<[u8]>,
+    pub source: String,
+    bytes: [u8],
 }
 

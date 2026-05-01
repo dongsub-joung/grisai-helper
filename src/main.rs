@@ -39,7 +39,7 @@ fn get_bytes_data<'a>(file: PeFile<'a>) -> Option<Vec<Box<bytes_data::BytesData>
         }
     };
 	
-    // @TODO add cust Error type
+    // @TODO add custom Error type
     let manifest = data.bytes();
     
     // @TODO need to get other data
@@ -89,7 +89,12 @@ fn main(){
         };
 
         // init translate
-        let cstring_data= string_from_bytes::CString::from_bytes(bytes_data);
+        let japanese_data= &v_bytes_data.iter().map(|data| 
+                match data.source{
+                    String::from("japanese") => data
+                }
+            );
+        let cstring_data= string_from_bytes::CString::from_bytes(japanese_data);
 
         // when thread will move or targeted process will quite
         // if  { 
