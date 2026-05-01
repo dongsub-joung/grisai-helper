@@ -97,18 +97,22 @@ fn main(){
         let cstring_data= string_from_bytes::CString::from_bytes(japanese_data);
         std::thread::spawn({
             let _cstring_data= cstring_data.clone();
-            // @TODO convert struct type
 
             let struct_string= struct_string::StringData::new(
                 _sctring_data,
                 struct_string::StringData::CONTURIES::ENGLISH
                 );
-            translation::Transaltion::new();
-            let struct_translated_strings= self::translation::TranslatedStrings::new();
             
+            let api_contents= translation::Transaltion::new(struct_string);
+
+            let struct_translated_strings= self::translation::TranslatedStrings::new();
+            let reponse= translation::TranslatedStrings::commuincate_with_translation_api(struct_translated_strings);
+            
+            // @TODO Json data deserialtizetion
+        
             self::translation::TranslatedStrings::logging_history(
                 &struct_translated_strings,
-                &translated_data);
+                json_data);
         });
         
         // when thread will move or targeted process will quite
