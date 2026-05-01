@@ -7,7 +7,7 @@ struct Translation{
 struct TranslatedStrings{
     log_data: Vec<CString>,
 }
-impl TranslatedStrings{
+pub impl TranslatedStrings{
     pub fn new() -> Self{ Self {log_data: Vec::from(CString::new())} }
 
     pub unsafe fn logging_history(&mut self, translated_cstring: Translation) -> &mut Self{
@@ -22,13 +22,16 @@ impl TranslatedStrings{
 
         self
     }
+    pub unsafe fn get_data() -> &self::sentence_data{
+        self.sentence_data
+    }
 }
 
 
 #[derive(Debug)]
 struct ApiCallErr;
 
-impl Translation{
+pub impl Translation{
     unsafe fn new(sentence_data: self::struct_string::StringData) -> Self {
         Self { sentence_data }
     }

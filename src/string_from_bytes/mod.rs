@@ -3,7 +3,7 @@ pub struct CString{
 }
 
 impl CString{
-    pub unsafe fn from_bytes(bytes: [u8]) -> Self{
-        Self { c_string_data: CString::from_bytes(bytes) }
+    pub unsafe fn from_bytes(bytes: &[u8]) -> Self{
+        Self { c_string_data: unsafe { CString::from_bytes(bytes) } }
     } 
 }
