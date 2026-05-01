@@ -19,7 +19,7 @@ unsafe extern "cdecl" fn on_check_sn(reg:*mut Registers, _:usize){
 struct ConvertingErr;
 
 // pelite
-// @TODO Fix Geeric type problem
+// @TODO Fix Generic type problem
 fn get_bytes_data<'a>(file: PeFile<'a>) -> Option<Vec<Box<bytes_data::BytesData>>> {
     const DATA_PATH: &'static str= "";
 
@@ -79,14 +79,11 @@ fn main(){
         
         // @TODO extract Japanese -> pelite(IDK its working?)
         let pe_file;
-        let bytes_data= match get_bytes_data(pe_file){
-            Ok(_bytes) =>{
+        let v_bytes_data= match get_bytes_data(pe_file){
+            Some(_bytes) =>{
                 return _bytes;
             },
-            Err(e) => { 
-                panic!("failed to get bytes data"); 
-            },
-            _ => { 
+            None => { 
                 panic!("None value") 
             }
         };
