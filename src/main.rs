@@ -20,7 +20,7 @@ struct ConvertingErr;
 
 // pelite
 // @TODO Fix Geeric type problem
-fn get_bytes_data<'a>(file: PeFile<'a>) -> Option<Box<Vec<bytes_data::BytesData>>> {
+fn get_bytes_data<'a>(file: PeFile<'a>) -> Option<Vec<Box<bytes_data::BytesData>>> {
     const DATA_PATH: &'static str= "";
 
 	// Access the resources
@@ -45,7 +45,7 @@ fn get_bytes_data<'a>(file: PeFile<'a>) -> Option<Box<Vec<bytes_data::BytesData>
     // @TODO need to get other data
     // pelite::resources -> pub fn new(section: &'a [u8], dir: &'a IMAGE_DATA_DIRECTORY) -> Resources<'a>
 
-    let v_manifests: Box<Vec<bytes_data::BytesData>>= Box::from(Vec::from(manifest));
+    let v_manifests: Vec<Boxc<bytes_data::BytesData>>= Vec::from(Box::from((manifest));
 	
     Option::Some(v_manifests)
 }
