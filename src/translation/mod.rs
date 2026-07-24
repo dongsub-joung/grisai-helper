@@ -1,19 +1,37 @@
-use crate::struct_string;
+use thiserror::Error;
 
-struct Translation{
-    sentence_data: self::struct_string::StringData,
+#[derive(Debug, Error)]
+pub enum TranslationErr {
+	#[error("translation buffer is empty")]
+	BuffEmpty,
+
+	#[error("translation API request failed: {0}")]
+	ApiRequest(String),
+
+	#[error("invalid translation API response: {0}")]
+	ApiResponse(String),
+
+	#[error("failed to convert string to CString")]
+	CStringConvertErr(#[from] std::ffi::NulError),
+
+	#[error("failed to save translation history")]
+	HistorySavingErr(#[from] std::io::Error),
 }
 
-struct TranslatedStrings{
-    log_data: Vec<CString>,
+pub struct Translation{
+	data: CString,
+	ptr_history_buff: &BOX<Vec<CString>>
 }
-pub impl TranslatedStrings{
-    pub fn new() -> Self{ Self {log_data: Vec::from(CString::new())} }
 
-    pub unsafe fn logging_history(&mut self, translated_string: Translation) -> &mut Self{
-        match self.log_data.capacity(){
+impl Translation {
+    pub unsafe fn logging_history(&mut self, translated_string: String) -> &mut Self{
+        let v_history=  match self.history_buff_ptr{
+            Some(v_history) => v_history,
+            None => panic!("history parsing err") // @TODO fix pacnic to custom err
+        };
+        match self.v_history.capacity(){
             0..30 => { 
-                self.log_data.push(translated_string.sentence_data);
+                self.ptr_history_buff.push(translated_string);
             },
             _ => {
                // @TODO save sentence_Data on log.txt
@@ -22,21 +40,15 @@ pub impl TranslatedStrings{
 
         self
     }
-    pub unsafe fn get_data() -> &self::sentence_data{
-        self.sentence_data
-    }
 }
 
+pub struct ApiTranslation{
+	traslated_string: String,
+	
+}
 
-#[derive(Debug)]
-struct ApiCallErr;
-
-pub impl Translation{
-    unsafe fn new(sentence_data: self::struct_string::StringData) -> Self {
-        Self { sentence_data }
-    }
-
-    // @TODO tokio
+impl ApiTranslation{
+	// @TODO tokio
     pub async fn commuicate_with_translation_api(&self){ // -> self::struct_string::StringData
         // make .evn
         const API_KEY: &'static str= "";
@@ -52,3 +64,11 @@ pub impl Translation{
         // save sentence_data
     }
 }
+
+fn main(){
+	let mut history_buff: Box<Vec<CString>> = Box::new(Vec::new());
+	let translation= Translation::new(data, &history_buff);
+
+
+}
+

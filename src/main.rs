@@ -20,7 +20,7 @@ struct ConvertingErr;
 
 // pelite
 // @TODO Fix Generic type problem
-fn get_bytes_data<'a>(file: PeFile<'a>) -> Option<Vec<Box<bytes_data::BytesData>>> {
+fn get_bytes_data<'a>(file: PeFile<'a>) -> Option<Box<Vec<bytes_data::BytesData>>> {
     const DATA_PATH: &'static str= "";
 
 	// Access the resources
@@ -45,7 +45,7 @@ fn get_bytes_data<'a>(file: PeFile<'a>) -> Option<Vec<Box<bytes_data::BytesData>
     // @TODO need to get other data
     // pelite::resources -> pub fn new(section: &'a [u8], dir: &'a IMAGE_DATA_DIRECTORY) -> Resources<'a>
 
-    let v_manifests: Vec<Boxc<bytes_data::BytesData>>= Vec::from(Box::from((manifest));
+    let v_manifests: Box<Vec<bytes_data::BytesData>>= Box::new(Vec::from(manifest));
 	
     Option::Some(v_manifests)
 }
@@ -82,7 +82,7 @@ fn main(){
         let pe_file;
         let v_bytes_data= match get_bytes_data(pe_file){
             Some(_bytes) =>{
-                return _bytes;
+                _bytes;
             },
             None => { 
                 panic!("None value") 
@@ -97,6 +97,9 @@ fn main(){
             );
         let cstring_data= string_from_bytes::CString::from_bytes(japanese_data);
         std::thread::spawn({
+            let mut history_buff: Box<Vec<CString>>= Box::new(Vec::new());
+            let translation= Translation::new(data, &history_buff);
+            
             let _cstring_data= cstring_data.clone();
 
             let struct_string= struct_string::StringData::new(
@@ -104,9 +107,6 @@ fn main(){
                 struct_string::StringData::CONTURIES::ENGLISH
                 );
             
-            let api_contents= translation::Transaltion::new(struct_string);
-
-            let struct_translated_strings= self::translation::TranslatedStrings::new();
             let reponse= translation::TranslatedStrings::commuincate_with_translation_api(struct_translated_strings);
             
             // @TODO Json data deserialtizetion
